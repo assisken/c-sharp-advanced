@@ -49,10 +49,12 @@
     <ItemGroup>
         <Compile Include="BackgroundObjects\Asteroid.cs" />
         <Compile Include="BackgroundObjects\BackgroundObject.cs" />
+        <Compile Include="BackgroundObjects\Bullet.cs" />
         <Compile Include="BackgroundObjects\Planet.cs" />
         <Compile Include="BackgroundObjects\Star.cs" />
         <Compile Include="BackgroundObjects\Sun.cs" />
         <Compile Include="Game.cs" />
+        <Compile Include="Interfaces\ICollision.cs" />
         <Compile Include="Program.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
         <EmbeddedResource Include="Properties\Resources.resx">

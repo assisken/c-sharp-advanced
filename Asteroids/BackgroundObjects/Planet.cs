@@ -1,7 +1,6 @@
 ﻿// Жига Никита
 
 using System.Drawing;
-using System.Windows.Forms.DataVisualization.Charting;
 using System.IO;
 
 namespace Asteroids.BackgroundObjects
@@ -9,7 +8,7 @@ namespace Asteroids.BackgroundObjects
     public class Planet : BackgroundObject
     {
         private readonly Bitmap _texture;
-        public Planet(Point3D position, Point direction, Size size) : base(position, direction, size)
+        public Planet(Point position, Point direction, Size size, int layer) : base(position, direction, size, layer)
         {
             using (var fs = new FileStream("../../Assets/planet.png", FileMode.Open))
                 _texture = new Bitmap(fs);

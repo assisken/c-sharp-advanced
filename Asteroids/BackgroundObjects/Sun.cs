@@ -2,14 +2,13 @@
 
 using System.Drawing;
 using System.IO;
-using System.Windows.Forms.DataVisualization.Charting;
 
 namespace Asteroids.BackgroundObjects
 {
     public class Sun : BackgroundObject
     {
         private readonly Bitmap _texture;
-        public Sun(Point3D position, Point direction, Size size) : base(position, direction, size)
+        public Sun(Point position, Point direction, Size size, int layer) : base(position, direction, size, layer)
         {
             using (var fs = new FileStream("../../Assets/sun.png", FileMode.Open))
                 _texture = new Bitmap(fs);

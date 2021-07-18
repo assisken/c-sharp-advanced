@@ -1,13 +1,12 @@
 ﻿// Жига Никита
 
 using System.Drawing;
-using System.Windows.Forms.DataVisualization.Charting;
 
 namespace Asteroids.BackgroundObjects
 {
     public class Star : BackgroundObject
     {
-        public Star(Point3D position, Point direction, Size size) : base(position, direction, size)
+        public Star(Point position, Point direction, Size size, int layer) : base(position, direction, size, layer)
         {
         }
 
