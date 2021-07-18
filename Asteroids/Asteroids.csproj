@@ -53,6 +53,8 @@
         <Compile Include="BackgroundObjects\Planet.cs" />
         <Compile Include="BackgroundObjects\Star.cs" />
         <Compile Include="BackgroundObjects\Sun.cs" />
+        <Compile Include="Exceptions\UnsupportedWindowSize.cs" />
+        <Compile Include="Exceptions\Error.cs" />
         <Compile Include="Game.cs" />
         <Compile Include="Interfaces\ICollision.cs" />
         <Compile Include="Program.cs" />

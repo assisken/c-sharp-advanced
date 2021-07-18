@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Drawing;
 using Asteroids.BackgroundObjects;
+using Asteroids.Exceptions;
 
 namespace Asteroids
 {
@@ -14,12 +15,27 @@ namespace Asteroids
         public static BufferedGraphics Buffer;
         public static int Width { get; private set; }
         public static int Height { get; private set; }
+        
+        public const int MinWidth = 0;
+        public const int MaxWidth = 800;
+        public const int MinHeight = 0;
+        public const int MaxHeight = 600;
 
         private static List<BackgroundObject> _objects;
         private static Dictionary<string, List<BackgroundObject>> _objectsByName;
 
         public static void Init(Form form)
         {
+            if (form.Width < MinWidth || form.Width > MaxWidth)
+            {
+                throw new UnsupportedWindowSize($"Unsupported width. Supported: from {MinWidth} to {MaxWidth}");
+            }
+
+            if (form.Height < MinHeight || form.Height > MaxHeight)
+            {
+                throw new UnsupportedWindowSize($"Unsupported height. Supported: from {MinHeight} to {MaxHeight}");
+            }
+
             _context = BufferedGraphicsManager.Current;
             var g = form.CreateGraphics();
 
