@@ -15,26 +15,21 @@ namespace Asteroids
         public static BufferedGraphics Buffer;
         public static int Width { get; private set; }
         public static int Height { get; private set; }
-        
+
         public const int MinWidth = 0;
         public const int MaxWidth = 800;
         public const int MinHeight = 0;
         public const int MaxHeight = 600;
 
         private static List<BackgroundObject> _objects;
-        private static Dictionary<string, List<BackgroundObject>> _objectsByName;
 
         public static void Init(Form form)
         {
             if (form.Width < MinWidth || form.Width > MaxWidth)
-            {
                 throw new UnsupportedWindowSize($"Unsupported width. Supported: from {MinWidth} to {MaxWidth}");
-            }
 
             if (form.Height < MinHeight || form.Height > MaxHeight)
-            {
                 throw new UnsupportedWindowSize($"Unsupported height. Supported: from {MinHeight} to {MaxHeight}");
-            }
 
             _context = BufferedGraphicsManager.Current;
             var g = form.CreateGraphics();
@@ -61,7 +56,6 @@ namespace Asteroids
         {
             var random = new Random();
             _objects = new List<BackgroundObject>();
-            _objectsByName = new Dictionary<string, List<BackgroundObject>>();
 
             for (var i = 0; i < 15; i++)
             {
@@ -109,22 +103,11 @@ namespace Asteroids
             for (var i = 0; i < 5; i++)
             {
                 _objects.Add(
-                    new Bullet(new Point(0 - i * 8, bulletsY), new Point(3, 0), new Size(5, 1), 0)
+                    new Bullet(new Point(0 + i * 8, bulletsY), new Point(3, 0), new Size(5, 1), 0)
                 );
             }
 
             _objects.Sort((o1, o2) => o1.Layer.CompareTo(o2.Layer));
-
-            foreach (var obj in _objects)
-            {
-                if (!_objectsByName.TryGetValue(obj.GetType().Name, out var list))
-                {
-                    list = new List<BackgroundObject>();
-                    _objectsByName[obj.GetType().Name] = list;
-                }
-
-                list.Add(obj);
-            }
         }
 
         public static void Draw()
@@ -140,14 +123,37 @@ namespace Asteroids
             foreach (var obj in _objects)
                 obj.Update();
 
-            if (
-                _objectsByName.TryGetValue(nameof(Bullet), out var bullets)
-                && _objectsByName.TryGetValue(nameof(Asteroid), out var asteroids)
-            )
-                foreach (var bullet in bullets)
-                foreach (var asteroid in asteroids)
-                    if (bullet.IsCollideWith(asteroid))
+            ProceedCollisions(new List<Type> {typeof(Bullet)});
+        }
+
+        private static void ProceedCollisions(ICollection<Type> whitelist)
+        {
+            for (var i = 0; i < _objects.Count; i++)
+            {
+                if (!whitelist.Contains(_objects[i].GetType()))
+                    continue;
+
+                for (var j = 0; j < _objects.Count; j++)
+                {
+                    if (j == i)
+                        continue;
+
+                    if (_objects[i].IsCollideWith(_objects[j]))
+                    {
                         System.Media.SystemSounds.Hand.Play();
+                        _objects[i] = SpawnNewBullet();
+                    }
+                }
+            }
+        }
+
+        private static Bullet SpawnNewBullet()
+        {
+            var random = new Random();
+            var x = random.Next(0, 2) == 0 ? 0 : Width;
+            var speed = x > 0 ? -3 : 3;
+            var y = random.Next(10, Height - 10);
+            return new Bullet(new Point(x, y), new Point(speed, 0), new Size(5, 1), 0);
         }
     }
 }

@@ -23,7 +23,7 @@ namespace Asteroids.BackgroundObjects
         {
             if (Position.X + Size.Width < 0)
                 Position.X = Game.Width + Size.Width;
-            
+
             Position.X += Direction.X;
         }
     }

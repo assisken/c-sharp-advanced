@@ -17,8 +17,9 @@ namespace Asteroids.BackgroundObjects
         protected const int minPositionY = Game.MinHeight;
         protected const int maxPositionX = Game.MaxWidth;
         protected const int maxPositionY = Game.MaxHeight;
-        protected const int minSpeed = 0;
+        protected const int minSpeed = -100;
         protected const int maxSpeed = 100;
+        protected virtual bool CanCollide => false;
 
         protected BackgroundObject(Point position, Point direction, Size size, int layer)
         {
@@ -32,8 +33,8 @@ namespace Asteroids.BackgroundObjects
                 );
 
             if (
-                position.X < minSpeed || maxSpeed < position.X ||
-                position.Y < minSpeed || maxSpeed < position.Y
+                direction.X < minSpeed || maxSpeed < direction.X ||
+                direction.Y < minSpeed || maxSpeed < direction.Y
             )
                 throw new ObjectValueError(
                     $"Wrong object speed: {direction}. " +
@@ -50,7 +51,7 @@ namespace Asteroids.BackgroundObjects
 
         public abstract void Draw();
         public abstract void Update();
-        public bool IsCollideWith(ICollision obj) => obj.Rectangle.IntersectsWith(Rectangle);
+        public bool IsCollideWith(ICollision obj) => CanCollide && obj.Rectangle.IntersectsWith(Rectangle);
         public Rectangle Rectangle => new Rectangle(Position, Size);
     }
 }

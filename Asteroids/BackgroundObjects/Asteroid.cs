@@ -8,6 +8,8 @@ namespace Asteroids.BackgroundObjects
     public class Asteroid : BackgroundObject
     {
         private readonly Bitmap _texture;
+        protected override bool CanCollide => true;
+
         public Asteroid(Point position, Point direction, Size size, int layer) : base(position, direction, size, layer)
         {
             using (var fs = new FileStream("../../Assets/asteroid.png", FileMode.Open))
