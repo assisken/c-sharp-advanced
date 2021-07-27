@@ -19,7 +19,8 @@ namespace Asteroids.BackgroundObjects
         protected const int maxPositionY = Game.MaxHeight;
         protected const int minSpeed = -100;
         protected const int maxSpeed = 100;
-        protected virtual bool CanCollide => false;
+        public virtual bool CanCollide => false;
+        public delegate void Message();
 
         protected BackgroundObject(Point position, Point direction, Size size, int layer)
         {
@@ -51,7 +52,11 @@ namespace Asteroids.BackgroundObjects
 
         public abstract void Draw();
         public abstract void Update();
-        public bool IsCollideWith(ICollision obj) => CanCollide && obj.Rectangle.IntersectsWith(Rectangle);
+        public bool IsCollideWith(ICollision obj) => CanCollide && obj.CanCollide && obj.Rectangle.IntersectsWith(Rectangle);
         public Rectangle Rectangle => new Rectangle(Position, Size);
+
+        public virtual void CollideWith(BackgroundObject obj)
+        {
+        }
     }
 }

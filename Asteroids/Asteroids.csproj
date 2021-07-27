@@ -51,6 +51,7 @@
         <Compile Include="BackgroundObjects\BackgroundObject.cs" />
         <Compile Include="BackgroundObjects\Bullet.cs" />
         <Compile Include="BackgroundObjects\Planet.cs" />
+        <Compile Include="BackgroundObjects\Ship.cs" />
         <Compile Include="BackgroundObjects\Star.cs" />
         <Compile Include="BackgroundObjects\Sun.cs" />
         <Compile Include="Exceptions\ObjectValueError.cs" />

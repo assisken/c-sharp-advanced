@@ -4,8 +4,10 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Drawing;
+using System.Threading;
 using Asteroids.BackgroundObjects;
 using Asteroids.Exceptions;
+using Timer = System.Windows.Forms.Timer;
 
 namespace Asteroids
 {
@@ -22,9 +24,13 @@ namespace Asteroids
         public const int MaxHeight = 600;
 
         private static List<BackgroundObject> _objects;
+        private static Ship _ship = new Ship(new Point(10, Height / 2), new Point(5, 5), new Size(10, 10), 10);
+        private static Timer _timer = new Timer {Interval = 100};
 
         public static void Init(Form form)
         {
+            form.KeyDown += Form_KeyDown;
+
             if (form.Width < MinWidth || form.Width > MaxWidth)
                 throw new UnsupportedWindowSize($"Unsupported width. Supported: from {MinWidth} to {MaxWidth}");
 
@@ -39,17 +45,40 @@ namespace Asteroids
 
             Buffer = _context.Allocate(g, new Rectangle(0, 0, Width, Height));
 
-            var timer = new Timer {Interval = 100};
-            timer.Start();
-            timer.Tick += Tick;
+            _timer.Start();
+            _timer.Tick += Tick;
 
             Load();
+            _ship.MessageDie += Finish;
+        }
+
+        private static void Form_KeyDown(object sender, KeyEventArgs e)
+        {
+            switch (e.KeyCode)
+            {
+                case Keys.ControlKey:
+                    _objects.Add(
+                        new Bullet(
+                            new Point(_ship.Rectangle.X + 10, _ship.Rectangle.Y + 4), 
+                            new Point(4, 0), 
+                            new Size(4, 1), 
+                            0
+                        )
+                    );
+                    break;
+                case Keys.Up:
+                    _ship.Up();
+                    break;
+                case Keys.Down:
+                    _ship.Down();
+                    break;
+            }
         }
 
         private static void Tick(object sender, EventArgs e)
         {
-            Update();
             Draw();
+            Update();
         }
 
         private static void Load()
@@ -107,14 +136,30 @@ namespace Asteroids
                 );
             }
 
+            _ship = new Ship(new Point(0, MaxHeight / 2), new Point(0, 5), new Size(5, 5), 1);
+            _objects.Add(_ship);
+
             _objects.Sort((o1, o2) => o1.Layer.CompareTo(o2.Layer));
         }
 
         public static void Draw()
         {
             Buffer.Graphics.Clear(Color.Black);
+            if (_ship != null)
+                Buffer.Graphics.DrawString("Energy: " + _ship.Energy, new Font(FontFamily.GenericSansSerif, 15), Brushes.White, 0, 0);
             foreach (var obj in _objects)
                 obj.Draw();
+            Buffer.Render();
+        }
+
+        public static void Finish()
+        {
+            _timer.Stop();
+            const string gameOverMessage = "GAME OVER";
+            const int fontSize = 60;
+            var xCenter = Width / 2 - gameOverMessage.Length * fontSize / 2;
+            var yCenter = Height / 2 - fontSize;
+            Buffer.Graphics.DrawString(gameOverMessage, new Font(FontFamily.GenericSansSerif, 60, FontStyle.Underline), Brushes.White, xCenter, yCenter);
             Buffer.Render();
         }
 
@@ -123,37 +168,28 @@ namespace Asteroids
             foreach (var obj in _objects)
                 obj.Update();
 
-            ProceedCollisions(new List<Type> {typeof(Bullet)});
+            ProceedCollisions(new List<Type> {typeof(Bullet), typeof(Ship)});
         }
 
         private static void ProceedCollisions(ICollection<Type> whitelist)
         {
-            for (var i = 0; i < _objects.Count; i++)
+            foreach (var obj1 in _objects)
             {
-                if (!whitelist.Contains(_objects[i].GetType()))
+                if (!whitelist.Contains(obj1.GetType()))
                     continue;
 
-                for (var j = 0; j < _objects.Count; j++)
+                foreach (var obj2 in _objects)
                 {
-                    if (j == i)
+                    if (obj1 == obj2)
                         continue;
 
-                    if (_objects[i].IsCollideWith(_objects[j]))
+                    if (obj1.IsCollideWith(obj2))
                     {
                         System.Media.SystemSounds.Hand.Play();
-                        _objects[i] = SpawnNewBullet();
+                        obj1.CollideWith(obj2);
                     }
                 }
             }
-        }
-
-        private static Bullet SpawnNewBullet()
-        {
-            var random = new Random();
-            var x = random.Next(0, 2) == 0 ? 0 : Width;
-            var speed = x > 0 ? -3 : 3;
-            var y = random.Next(10, Height - 10);
-            return new Bullet(new Point(x, y), new Point(speed, 0), new Size(5, 1), 0);
         }
     }
 }
