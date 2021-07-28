@@ -1,7 +1,6 @@
 ﻿// Жига Никита
 
 using System.Drawing;
-using System.IO;
 
 namespace Asteroids.BackgroundObjects
 {
@@ -9,7 +8,7 @@ namespace Asteroids.BackgroundObjects
     {
         protected override string TexturePath => "../../Assets/planet.png";
 
-        public Planet(Point position, Point direction, Size size, int layer, Log logger) : base(position, direction, size, layer, logger)
+        public Planet(Point position, Point direction, Size size, int layer, Log logger, Destroyer destroy) : base(position, direction, size, layer, logger, destroy)
         {
         }
 

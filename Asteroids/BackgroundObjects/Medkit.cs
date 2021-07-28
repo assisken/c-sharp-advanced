@@ -7,7 +7,7 @@ namespace Asteroids.BackgroundObjects
     {
         protected override string TexturePath => "../../Assets/medkit.png";
 
-        public Medkit(Point position, Point direction, Size size, int layer, Log logger) : base(position, direction, size, layer, logger)
+        public Medkit(Point position, Point direction, Size size, int layer, Log logger, Destroyer destroy) : base(position, direction, size, layer, logger, destroy)
         {
         }
         public override void Update() {

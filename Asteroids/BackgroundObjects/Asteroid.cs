@@ -1,7 +1,7 @@
 ﻿// Жига Никита
 
+using System;
 using System.Drawing;
-using System.IO;
 
 namespace Asteroids.BackgroundObjects
 {
@@ -10,7 +10,7 @@ namespace Asteroids.BackgroundObjects
         protected override string TexturePath => "../../Assets/asteroid.png";
         public override bool CanCollide => true;
 
-        public Asteroid(Point position, Point direction, Size size, int layer, Log logger) : base(position, direction, size, layer, logger)
+        public Asteroid(Point position, Point direction, Size size, int layer, Log logger, Destroyer destroy) : base(position, direction, size, layer, logger, destroy)
         {
         }
 
@@ -27,6 +27,14 @@ namespace Asteroids.BackgroundObjects
 
             Position.X += Direction.X;
             Position.Y += Direction.Y;
+        }
+        
+        public void Destroy()
+        {
+            var random = new Random();
+            var y = random.Next(10, Game.Height - 10);
+            
+            Position = new Point(Game.Width, y);
         }
     }
 }

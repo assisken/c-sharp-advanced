@@ -1,8 +1,6 @@
 ﻿// Жига Никита
 
-using System.Diagnostics;
 using System.Drawing;
-using System.IO;
 using Asteroids.Exceptions;
 using Asteroids.Interfaces;
 
@@ -12,7 +10,7 @@ namespace Asteroids.BackgroundObjects
     {
         protected Point Position;
         protected Point Direction;
-        protected Size Size;
+        public Size Size;
         public readonly int Layer;
 
         protected const int minPositionX = Game.MinWidth;
@@ -26,15 +24,19 @@ namespace Asteroids.BackgroundObjects
         public delegate void Message();
 
         public delegate void Log(string msg);
+        public delegate void Destroyer(BackgroundObject obj);
 
         protected event Log Event;
+        protected event Destroyer DestroyMessage;
 
         protected void onEvent(string msg) => Event?.Invoke(msg);
 
-        protected BackgroundObject(Point position, Point direction, Size size, int layer, Log logger)
+        protected BackgroundObject(Point position, Point direction, Size size, int layer, Log logger, Destroyer destroy)
         {
             Event += logger;
             Event?.Invoke($"Creating object {GetType().Name} at {position}");
+
+            DestroyMessage += destroy;
 
             if (
                 position.X < minPositionX || maxPositionX < position.X ||
@@ -73,5 +75,7 @@ namespace Asteroids.BackgroundObjects
         public virtual void CollideWith(BackgroundObject obj)
         {
         }
+
+        public void Destroy() => DestroyMessage?.Invoke(this);
     }
 }

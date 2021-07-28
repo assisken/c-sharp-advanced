@@ -8,8 +8,9 @@ namespace Asteroids.BackgroundObjects
     public class Bullet : BackgroundObject
     {
         public override bool CanCollide => true;
-    
-        public Bullet(Point position, Point direction, Size size, int layer, Log logger) : base(position, direction, size, layer, logger)
+
+        public Bullet(Point position, Point direction, Size size, int layer, Log logger, Destroyer destroy) : base(position, direction,
+            size, layer, logger, destroy)
         {
         }
 
@@ -23,15 +24,19 @@ namespace Asteroids.BackgroundObjects
             Position.X += Direction.X;
         }
 
-        public override void CollideWith(BackgroundObject obj)
+        public override void CollideWith(BackgroundObject obj) => SelectCollisionStrategy(obj)();
+
+        private delegate void CollisionStrategy();
+
+        private CollisionStrategy SelectCollisionStrategy(BackgroundObject obj) => obj switch
         {
-            var random = new Random();
-            var x = random.Next(0, 2) == 0 ? 0 : Game.Width;
-            var speed = x > 0 ? -3 : 3;
-            var y = random.Next(10, Game.Height - 10);
-            
-            Position = new Point(x, y);
-            Direction = new Point(speed, 0);
-        }
+            Asteroid asteroid => () =>
+            {
+                Game.Score += 100;
+                asteroid.Destroy();
+                Destroy();
+            },
+            _ => () => { }
+        };
     }
 }

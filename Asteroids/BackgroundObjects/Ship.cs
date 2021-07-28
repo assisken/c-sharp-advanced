@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Drawing;
-using System.IO;
 
 namespace Asteroids.BackgroundObjects
 {
@@ -14,8 +13,8 @@ namespace Asteroids.BackgroundObjects
         protected override string TexturePath => "../../Assets/ship.png";
         public override bool CanCollide => true;
 
-        public Ship(Point position, Point direction, Size size, int layer, Log logger) : base(position, direction, size,
-            layer, logger)
+        public Ship(Point position, Point direction, Size size, int layer, Log logger, Destroyer destroy) : base(position, direction, size,
+            layer, logger, destroy)
         {
         }
 
@@ -41,13 +40,13 @@ namespace Asteroids.BackgroundObjects
             MessageDie?.Invoke();
         }
 
-        public override void CollideWith(BackgroundObject obj) => SelectCollisionStrategy(obj)(obj);
+        public override void CollideWith(BackgroundObject obj) => SelectCollisionStrategy(obj)();
 
-        private delegate void CollisionStrategy(BackgroundObject obj);
+        private delegate void CollisionStrategy();
 
         private CollisionStrategy SelectCollisionStrategy(BackgroundObject obj) => obj switch
         {
-            Asteroid => _ =>
+            Asteroid => () =>
             {
                 var random = new Random();
                 EnergyLow(random.Next(1, 11));
@@ -57,12 +56,12 @@ namespace Asteroids.BackgroundObjects
                     Die();
                 }
             },
-            Medkit medkit => _ =>
+            Medkit medkit => () =>
             {
                 medkit.Consume();
                 _energy += 10;
             },
-            _ => _ => { }
+            _ => () => { }
         };
     }
 }
