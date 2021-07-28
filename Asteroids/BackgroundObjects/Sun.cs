@@ -5,18 +5,12 @@ using System.IO;
 
 namespace Asteroids.BackgroundObjects
 {
-    public class Sun : BackgroundObject
+    public class Sun : TexturedBackgroundObject
     {
-        private readonly Bitmap _texture;
-        public Sun(Point position, Point direction, Size size, int layer) : base(position, direction, size, layer)
-        {
-            using (var fs = new FileStream("../../Assets/sun.png", FileMode.Open))
-                _texture = new Bitmap(fs);
-        }
+        protected override string TexturePath => "../../Assets/sun.png";
 
-        public override void Draw()
+        public Sun(Point position, Point direction, Size size, int layer, Log logger) : base(position, direction, size, layer, logger)
         {
-            Game.Buffer.Graphics.DrawImage(_texture, Position.X, Position.Y, Size.Width, Size.Height);
         }
 
         public override void Update()

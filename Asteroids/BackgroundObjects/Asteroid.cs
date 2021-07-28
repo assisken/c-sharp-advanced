@@ -5,20 +5,13 @@ using System.IO;
 
 namespace Asteroids.BackgroundObjects
 {
-    public class Asteroid : BackgroundObject
+    public class Asteroid : TexturedBackgroundObject
     {
-        private readonly Bitmap _texture;
+        protected override string TexturePath => "../../Assets/asteroid.png";
         public override bool CanCollide => true;
 
-        public Asteroid(Point position, Point direction, Size size, int layer) : base(position, direction, size, layer)
+        public Asteroid(Point position, Point direction, Size size, int layer, Log logger) : base(position, direction, size, layer, logger)
         {
-            using (var fs = new FileStream("../../Assets/asteroid.png", FileMode.Open))
-                _texture = new Bitmap(fs);
-        }
-
-        public override void Draw()
-        {
-            Game.Buffer.Graphics.DrawImage(_texture, Position.X, Position.Y, Size.Width, Size.Height);
         }
 
         public override void Update()

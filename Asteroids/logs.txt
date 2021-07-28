@@ -1,0 +1,77 @@
+Initializing game...
+Loading objects...
+Creating object Asteroid at {X=156,Y=430}
+Creating object Asteroid at {X=487,Y=138}
+Creating object Asteroid at {X=77,Y=234}
+Creating object Asteroid at {X=675,Y=257}
+Creating object Asteroid at {X=267,Y=477}
+Creating object Asteroid at {X=333,Y=385}
+Creating object Asteroid at {X=552,Y=550}
+Creating object Asteroid at {X=433,Y=202}
+Creating object Asteroid at {X=484,Y=525}
+Creating object Asteroid at {X=713,Y=147}
+Creating object Asteroid at {X=648,Y=67}
+Creating object Asteroid at {X=273,Y=113}
+Creating object Asteroid at {X=731,Y=137}
+Creating object Asteroid at {X=91,Y=465}
+Creating object Asteroid at {X=392,Y=254}
+Creating object Star at {X=316,Y=417}
+Creating object Star at {X=69,Y=126}
+Creating object Star at {X=143,Y=461}
+Creating object Star at {X=308,Y=328}
+Creating object Star at {X=127,Y=374}
+Creating object Star at {X=275,Y=156}
+Creating object Star at {X=183,Y=559}
+Creating object Star at {X=445,Y=106}
+Creating object Star at {X=689,Y=44}
+Creating object Star at {X=582,Y=448}
+Creating object Star at {X=292,Y=100}
+Creating object Star at {X=583,Y=386}
+Creating object Star at {X=257,Y=557}
+Creating object Star at {X=561,Y=421}
+Creating object Star at {X=504,Y=293}
+Creating object Planet at {X=95,Y=374}
+Creating object Sun at {X=671,Y=15}
+Creating object Bullet at {X=0,Y=158}
+Creating object Bullet at {X=8,Y=158}
+Creating object Bullet at {X=16,Y=158}
+Creating object Bullet at {X=24,Y=158}
+Creating object Bullet at {X=32,Y=158}
+Creating object Medkit at {X=554,Y=398}
+Creating object Medkit at {X=241,Y=469}
+Creating object Medkit at {X=435,Y=332}
+Creating object Medkit at {X=164,Y=82}
+Creating object Medkit at {X=46,Y=247}
+Creating object Ship at {X=0,Y=300}
+
+Creating object Bullet at {X=10,Y=284}
+Creating object Bullet at {X=10,Y=284}
+Creating object Bullet at {X=10,Y=284}
+Creating object Bullet at {X=10,Y=274}
+Creating object Bullet at {X=10,Y=274}
+Creating object Bullet at {X=10,Y=264}
+Creating object Bullet at {X=10,Y=264}
+Creating object Bullet at {X=10,Y=264}
+Creating object Bullet at {X=10,Y=254}
+Creating object Bullet at {X=10,Y=234}
+Creating object Bullet at {X=10,Y=244}
+Creating object Bullet at {X=10,Y=234}
+Creating object Bullet at {X=10,Y=234}
+Creating object Bullet at {X=10,Y=234}
+Creating object Bullet at {X=10,Y=204}
+Creating object Bullet at {X=10,Y=204}
+ect Bullet at {X=10,Y=164}
+Ship has died
+Game was finished
+Creating object Bullet at {X=10,Y=164}
+Creating object Bullet at {X=10,Y=164}
+Creating object Bullet at {X=10,Y=164}
+Creating object Bullet at {X=10,Y=164}
+Creating object Bullet at {X=10,Y=164}
+Creating object Bullet at {X=10,Y=164}
+Creating object Bullet at {X=10,Y=164}
+Creating object Bullet at {X=10,Y=164}
+Creating object Bullet at {X=10,Y=164}
+Creating object Bullet at {X=10,Y=164}
+Creating object Bullet at {X=10,Y=164}
+Creating object Bullet at {X=10,Y=164}

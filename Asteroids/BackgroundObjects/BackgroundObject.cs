@@ -1,6 +1,8 @@
 ﻿// Жига Никита
 
+using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using Asteroids.Exceptions;
 using Asteroids.Interfaces;
 
@@ -8,7 +10,7 @@ namespace Asteroids.BackgroundObjects
 {
     public abstract class BackgroundObject : ICollision
     {
-        public Point Position;
+        protected Point Position;
         protected Point Direction;
         protected Size Size;
         public readonly int Layer;
@@ -20,10 +22,20 @@ namespace Asteroids.BackgroundObjects
         protected const int minSpeed = -100;
         protected const int maxSpeed = 100;
         public virtual bool CanCollide => false;
+
         public delegate void Message();
 
-        protected BackgroundObject(Point position, Point direction, Size size, int layer)
+        public delegate void Log(string msg);
+
+        protected event Log Event;
+
+        protected void onEvent(string msg) => Event?.Invoke(msg);
+
+        protected BackgroundObject(Point position, Point direction, Size size, int layer, Log logger)
         {
+            Event += logger;
+            Event?.Invoke($"Creating object {GetType().Name} at {position}");
+
             if (
                 position.X < minPositionX || maxPositionX < position.X ||
                 position.Y < minPositionY || maxPositionY < position.Y
@@ -52,7 +64,10 @@ namespace Asteroids.BackgroundObjects
 
         public abstract void Draw();
         public abstract void Update();
-        public bool IsCollideWith(ICollision obj) => CanCollide && obj.CanCollide && obj.Rectangle.IntersectsWith(Rectangle);
+
+        public bool IsCollideWith(ICollision obj) =>
+            CanCollide && obj.CanCollide && obj.Rectangle.IntersectsWith(Rectangle);
+
         public Rectangle Rectangle => new Rectangle(Position, Size);
 
         public virtual void CollideWith(BackgroundObject obj)
