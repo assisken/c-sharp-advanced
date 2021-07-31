@@ -1,30 +1,26 @@
 ﻿// Жига Никита
 
 using System.Drawing;
-using System.IO;
-using System.Windows.Forms.DataVisualization.Charting;
 
 namespace Asteroids.BackgroundObjects
 {
     public class Sun : BackgroundObject
     {
-        private readonly Bitmap _texture;
-        public Sun(Point3D position, Point direction, Size size) : base(position, direction, size)
+        private readonly Bitmap _texture = TextureLoader.LoadTextureFromFile("../../Assets/sun.png");
+
+        public Sun(Point position, Point direction, Size size, int layer, Log logger) : base(position, direction, size,
+            layer, logger)
         {
-            using (var fs = new FileStream("../../Assets/sun.png", FileMode.Open))
-                _texture = new Bitmap(fs);
         }
 
-        public override void Draw()
-        {
+        public override void Draw() =>
             Game.Buffer.Graphics.DrawImage(_texture, Position.X, Position.Y, Size.Width, Size.Height);
-        }
 
         public override void Update()
         {
             if (Position.X + Size.Width < 0)
                 Position.X = Game.Width + Size.Width;
-            
+
             Position.X += Direction.X;
         }
     }

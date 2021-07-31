@@ -12,6 +12,7 @@
         <FileAlignment>512</FileAlignment>
         <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
         <Deterministic>true</Deterministic>
+        <LangVersion>9</LangVersion>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
         <PlatformTarget>AnyCPU</PlatformTarget>
@@ -49,12 +50,24 @@
     <ItemGroup>
         <Compile Include="BackgroundObjects\Asteroid.cs" />
         <Compile Include="BackgroundObjects\BackgroundObject.cs" />
+        <Compile Include="BackgroundObjects\Bullet.cs" />
+        <Compile Include="BackgroundObjects\Medkit.cs" />
         <Compile Include="BackgroundObjects\Planet.cs" />
+        <Compile Include="BackgroundObjects\Projectile.cs" />
+        <Compile Include="BackgroundObjects\Ship.cs" />
         <Compile Include="BackgroundObjects\Star.cs" />
         <Compile Include="BackgroundObjects\Sun.cs" />
+        <Compile Include="Exceptions\ObjectValueError.cs" />
+        <Compile Include="Exceptions\UnsupportedWindowSize.cs" />
+        <Compile Include="Exceptions\Error.cs" />
         <Compile Include="Game.cs" />
+        <Compile Include="Interfaces\IProjectile.cs" />
+        <Compile Include="Interfaces\IHeal.cs" />
+        <Compile Include="Interfaces\ITarget.cs" />
+        <Compile Include="ObjectPool.cs" />
         <Compile Include="Program.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
+        <Compile Include="TextureLoader.cs" />
         <EmbeddedResource Include="Properties\Resources.resx">
             <Generator>ResXFileCodeGenerator</Generator>
             <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -79,6 +92,8 @@
     </ItemGroup>
     <ItemGroup>
       <Content Include="Assets\asteroid.png" />
+      <Content Include="Assets\medkit.png" />
+      <Content Include="Assets\ship.png" />
       <Content Include="Assets\sun.png" />
       <Content Include="Assets\planet.png" />
     </ItemGroup>

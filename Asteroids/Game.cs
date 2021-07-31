@@ -1,11 +1,11 @@
 ﻿// Жига Никита
 
 using System;
-using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Drawing;
-using System.Windows.Forms.DataVisualization.Charting;
-using Asteroids.BackgroundObjects;
+using System.IO;
+using Asteroids.Exceptions;
+using Timer = System.Windows.Forms.Timer;
 
 namespace Asteroids
 {
@@ -16,10 +16,26 @@ namespace Asteroids
         public static int Width { get; private set; }
         public static int Height { get; private set; }
 
-        private static List<BackgroundObject> _objects;
+        public const int MinWidth = 0;
+        public const int MaxWidth = 800;
+        public const int MinHeight = 0;
+        public const int MaxHeight = 600;
+
+        private static readonly Timer _timer = new() {Interval = 100};
+        private static ObjectPool _objectPool;
+        public static int Score;
 
         public static void Init(Form form)
         {
+            Log("Initializing game...");
+            form.KeyDown += Form_KeyDown;
+
+            if (form.Width < MinWidth || form.Width > MaxWidth)
+                throw new UnsupportedWindowSize($"Unsupported width. Supported: from {MinWidth} to {MaxWidth}");
+
+            if (form.Height < MinHeight || form.Height > MaxHeight)
+                throw new UnsupportedWindowSize($"Unsupported height. Supported: from {MinHeight} to {MaxHeight}");
+
             _context = BufferedGraphicsManager.Current;
             var g = form.CreateGraphics();
 
@@ -28,81 +44,77 @@ namespace Asteroids
 
             Buffer = _context.Allocate(g, new Rectangle(0, 0, Width, Height));
 
-            var timer = new Timer {Interval = 100};
-            timer.Start();
-            timer.Tick += Tick;
+            _timer.Start();
+            _timer.Tick += Tick;
 
-            Load();
+            _objectPool = new ObjectPool(Log, Hit, Finish);
+            _objectPool.Load();
+        }
+
+        private static void Form_KeyDown(object sender, KeyEventArgs e)
+        {
+            switch (e.KeyCode)
+            {
+                case Keys.ControlKey:
+                    _objectPool.CreateBullet();
+                    break;
+                case Keys.Up:
+                    _objectPool.Ship.Up();
+                    break;
+                case Keys.Down:
+                    _objectPool.Ship.Down();
+                    break;
+            }
         }
 
         private static void Tick(object sender, EventArgs e)
         {
-            Update();
             Draw();
-        }
-
-        private static void Load()
-        {
-            var random = new Random();
-            _objects = new List<BackgroundObject>();
-
-            for (var i = 0; i < 15; i++)
-            {
-                var x = random.Next(0, Width);
-                var y = random.Next(0, Height);
-                var xDirection = random.Next(-25, 25);
-                var yDirection = random.Next(-25, 25);
-                var size = random.Next(10, 40);
-                _objects.Add(
-                    new Asteroid(new Point3D(x, y, 0), new Point(xDirection, yDirection), new Size(size, size))
-                );
-            }
-
-            for (var i = 0; i < 15; i++)
-            {
-                var x = random.Next(0, Width);
-                var y = random.Next(0, Height);
-                var size = random.Next(1, 5);
-                _objects.Add(
-                    new Star(new Point3D(x, y, -3), new Point(-i, 0), new Size(size, size))
-                );
-            }
-
-            for (var i = 0; i < 1; i++)
-            {
-                var x = random.Next(0, Width);
-                var y = random.Next(0, Height);
-                var size = random.Next(100, 1000);
-                _objects.Add(
-                    new Planet(new Point3D(x, y, -1), new Point(-10, 0), new Size(size, size))
-                );
-            }
-            
-            for (var i = 0; i < 1; i++)
-            {
-                var x = random.Next(0, Width);
-                var y = random.Next(0, Height);
-                var size = random.Next(10, 100);
-                _objects.Add(
-                    new Sun(new Point3D(x, y, -2), new Point(-5, 0), new Size(size, size))
-                );
-            }
-
-            _objects.Sort((o1, o2) => o1.Position.Z.CompareTo(o2.Position.Z));
+            Update();
         }
 
         public static void Draw()
         {
             Buffer.Graphics.Clear(Color.Black);
-            foreach (var obj in _objects)
-                obj.Draw();
+            _objectPool.DrawAll();
+            if (_objectPool.Ship != null)
+                Buffer.Graphics.DrawString(
+                    $"Score: {Score}\nEnergy: {_objectPool.Ship.Energy}",
+                    new Font(FontFamily.GenericSansSerif, 15),
+                    Brushes.White, 0, 0
+                );
             Buffer.Render();
+        }
+
+        public static void Finish()
+        {
+            _timer.Stop();
+            const string gameOverMessage = "GAME OVER";
+            const int fontSize = 60;
+            var xCenter = Width / 2 - gameOverMessage.Length * fontSize / 2;
+            var yCenter = Height / 2 - fontSize;
+            Draw();
+            Buffer.Graphics.DrawString(gameOverMessage, new Font(FontFamily.GenericSansSerif, 60, FontStyle.Underline),
+                Brushes.White, xCenter, yCenter);
+            Buffer.Render();
+            Log("Game was finished");
         }
 
         private static void Update()
         {
-            foreach (var obj in _objects)
-                obj.Update();
+            _objectPool.UpdateAll();
+            _objectPool.ProceedCollisions();
         }
+
+        public static StreamWriter File = null;
+
+        private static void Log(string e)
+        {
+            Console.Write(e);
+            File?.WriteLine(e);
+            File?.Flush();
+        }
+
+        private static void Hit(int score) => Score += score;
     }
 }
