@@ -4,13 +4,17 @@ using System.Drawing;
 
 namespace Asteroids.BackgroundObjects
 {
-    public class Sun : TexturedBackgroundObject
+    public class Sun : BackgroundObject
     {
-        protected override string TexturePath => "../../Assets/sun.png";
+        private readonly Bitmap _texture = TextureLoader.LoadTextureFromFile("../../Assets/sun.png");
 
-        public Sun(Point position, Point direction, Size size, int layer, Log logger, Destroyer destroy) : base(position, direction, size, layer, logger, destroy)
+        public Sun(Point position, Point direction, Size size, int layer, Log logger) : base(position, direction, size,
+            layer, logger)
         {
         }
+
+        public override void Draw() =>
+            Game.Buffer.Graphics.DrawImage(_texture, Position.X, Position.Y, Size.Width, Size.Height);
 
         public override void Update()
         {

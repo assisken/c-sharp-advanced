@@ -2,11 +2,10 @@
 
 using System.Drawing;
 using Asteroids.Exceptions;
-using Asteroids.Interfaces;
 
 namespace Asteroids.BackgroundObjects
 {
-    public abstract class BackgroundObject : ICollision
+    public abstract class BackgroundObject
     {
         protected Point Position;
         protected Point Direction;
@@ -24,19 +23,15 @@ namespace Asteroids.BackgroundObjects
         public delegate void Message();
 
         public delegate void Log(string msg);
-        public delegate void Destroyer(BackgroundObject obj);
 
         protected event Log Event;
-        protected event Destroyer DestroyMessage;
 
         protected void onEvent(string msg) => Event?.Invoke(msg);
 
-        protected BackgroundObject(Point position, Point direction, Size size, int layer, Log logger, Destroyer destroy)
+        protected BackgroundObject(Point position, Point direction, Size size, int layer, Log logger)
         {
             Event += logger;
             Event?.Invoke($"Creating object {GetType().Name} at {position}");
-
-            DestroyMessage += destroy;
 
             if (
                 position.X < minPositionX || maxPositionX < position.X ||
@@ -66,16 +61,5 @@ namespace Asteroids.BackgroundObjects
 
         public abstract void Draw();
         public abstract void Update();
-
-        public bool IsCollideWith(ICollision obj) =>
-            CanCollide && obj.CanCollide && obj.Rectangle.IntersectsWith(Rectangle);
-
-        public Rectangle Rectangle => new Rectangle(Position, Size);
-
-        public virtual void CollideWith(BackgroundObject obj)
-        {
-        }
-
-        public void Destroy() => DestroyMessage?.Invoke(this);
     }
 }

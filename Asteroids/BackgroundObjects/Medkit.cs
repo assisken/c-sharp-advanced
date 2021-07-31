@@ -1,29 +1,47 @@
 ﻿using System;
 using System.Drawing;
+using Asteroids.Interfaces;
 
 namespace Asteroids.BackgroundObjects
 {
-    public class Medkit : TexturedBackgroundObject
+    public class Medkit : Projectile, IHeal
     {
-        protected override string TexturePath => "../../Assets/medkit.png";
+        private readonly Bitmap _texture = TextureLoader.LoadTextureFromFile("../../Assets/medkit.png");
+        public override int hardness => 0;
+        private event IHeal.HealMessage HealMessage;
 
-        public Medkit(Point position, Point direction, Size size, int layer, Log logger, Destroyer destroy) : base(position, direction, size, layer, logger, destroy)
+        public Medkit(Point position, Point direction, Size size, int layer, Log logger, Destroyer destroy,
+            IHeal.HealMessage heal) : base(position, direction, size, layer, logger, destroy)
         {
+            HealMessage += heal;
         }
-        public override void Update() {
+
+        public override void Draw() =>
+            Game.Buffer.Graphics.DrawImage(_texture, Position.X, Position.Y, Size.Width, Size.Height);
+
+        public override void Update()
+        {
             Position.X += Direction.X;
             if (Position.X <= -Size.Width)
-                Consume();
+                Destroy();
         }
 
-        public void Consume()
+        public override void Destroy()
         {
             var random = new Random();
             var y = random.Next(10, Game.Height - 10);
-            
+
             Position = new Point(Game.Width, y);
         }
 
-        public override bool CanCollide => true;
+        public void Heal() => HealMessage?.Invoke(10);
+
+        public override void Collide(Projectile obj)
+        {
+            if (obj.GetType() == typeof(Ship))
+                Heal();
+            
+            base.Collide(obj);
+        }
     }
 }
