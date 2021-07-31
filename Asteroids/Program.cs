@@ -12,7 +12,7 @@ namespace Asteroids
         static void Main()
         {
             var form = new Form {Width = 800, Height = 600};
-            using (var fs = new FileStream("../../logs.txt", FileMode.Open))
+            using (var fs = new FileStream("../../logs.txt", FileMode.OpenOrCreate))
             {
                 Game.File = new StreamWriter(fs);
                 Game.Init(form);

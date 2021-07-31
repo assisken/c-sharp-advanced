@@ -3,20 +3,24 @@ using System.Drawing;
 
 namespace Asteroids.BackgroundObjects
 {
-    public class Ship : TexturedBackgroundObject
+    public class Ship : Projectile
     {
+        private readonly Bitmap _texture = TextureLoader.LoadTextureFromFile("../../Assets/ship.png");
+        public override int hardness => 50;
         public event Message MessageDie;
-        private int _energy = 100;
-        public int Energy => _energy;
+        public int Energy { get; private set; } = 100;
 
-        public void EnergyLow(int n) => _energy -= n;
-        protected override string TexturePath => "../../Assets/ship.png";
+        public void EnergyLow(int n) => Energy -= n;
         public override bool CanCollide => true;
 
-        public Ship(Point position, Point direction, Size size, int layer, Log logger, Destroyer destroy) : base(position, direction, size,
+        public Ship(Point position, Point direction, Size size, int layer, Log logger, Destroyer destroy) : base(
+            position, direction, size,
             layer, logger, destroy)
         {
         }
+
+        public override void Draw() =>
+            Game.Buffer.Graphics.DrawImage(_texture, Position.X, Position.Y, Size.Width, Size.Height);
 
         public override void Update()
         {
@@ -34,34 +38,22 @@ namespace Asteroids.BackgroundObjects
                 Position.Y += Direction.Y;
         }
 
-        public void Die()
+        public override void Collide(Projectile obj)
+        {
+            if (Energy <= 0)
+                base.Collide(obj);
+
+            var random = new Random();
+            EnergyLow(obj.hardness);
+        }
+
+        public void Heal(int hp) => Energy += hp;
+
+        public override void Destroy()
         {
             onEvent("Ship has died");
             MessageDie?.Invoke();
+            base.Destroy();
         }
-
-        public override void CollideWith(BackgroundObject obj) => SelectCollisionStrategy(obj)();
-
-        private delegate void CollisionStrategy();
-
-        private CollisionStrategy SelectCollisionStrategy(BackgroundObject obj) => obj switch
-        {
-            Asteroid => () =>
-            {
-                var random = new Random();
-                EnergyLow(random.Next(1, 11));
-                if (_energy <= 0)
-                {
-                    _energy = 0;
-                    Die();
-                }
-            },
-            Medkit medkit => () =>
-            {
-                medkit.Consume();
-                _energy += 10;
-            },
-            _ => () => { }
-        };
     }
 }

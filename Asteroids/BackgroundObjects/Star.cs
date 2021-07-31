@@ -6,7 +6,7 @@ namespace Asteroids.BackgroundObjects
 {
     public class Star : BackgroundObject
     {
-        public Star(Point position, Point direction, Size size, int layer, Log logger, Destroyer destroy) : base(position, direction, size, layer, logger, destroy)
+        public Star(Point position, Point direction, Size size, int layer, Log logger) : base(position, direction, size, layer, logger)
         {
         }
 

@@ -1,18 +1,25 @@
 ﻿// Жига Никита
 
-using System;
 using System.Drawing;
+using Asteroids.Interfaces;
 
 namespace Asteroids.BackgroundObjects
 {
-    public class Asteroid : TexturedBackgroundObject
+    public class Asteroid : Projectile, ITarget
     {
-        protected override string TexturePath => "../../Assets/asteroid.png";
-        public override bool CanCollide => true;
+        private readonly Bitmap _texture = TextureLoader.LoadTextureFromFile("../../Assets/asteroid.png");
+        public override int hardness => 10;
+        private event ITarget.HitMessage HitMessage;
 
-        public Asteroid(Point position, Point direction, Size size, int layer, Log logger, Destroyer destroy) : base(position, direction, size, layer, logger, destroy)
+        public Asteroid(Point position, Point direction, Size size, int layer, Log logger, Destroyer destroy,
+            ITarget.HitMessage hit) : base(
+            position, direction, size, layer, logger, destroy)
         {
+            HitMessage += hit;
         }
+
+        public override void Draw() =>
+            Game.Buffer.Graphics.DrawImage(_texture, Position.X, Position.Y, Size.Width, Size.Height);
 
         public override void Update()
         {
@@ -28,13 +35,13 @@ namespace Asteroids.BackgroundObjects
             Position.X += Direction.X;
             Position.Y += Direction.Y;
         }
-        
-        public void Destroy()
+
+        public void Hit() => HitMessage?.Invoke(100);
+
+        public override void Destroy()
         {
-            var random = new Random();
-            var y = random.Next(10, Game.Height - 10);
-            
-            Position = new Point(Game.Width, y);
+            Hit();
+            base.Destroy();
         }
     }
 }
