@@ -10,6 +10,8 @@ namespace Asteroids
     {
         private List<BackgroundObject> _backgroundObjects = new();
         private List<Projectile> _projectiles = new();
+        private List<Asteroid> _asteroids = new();
+        private int _asteroidCount = 5;
         public Ship Ship;
         private BackgroundObject.Log _logger;
         private ITarget.HitMessage _hit;
@@ -33,22 +35,6 @@ namespace Asteroids
             _backgroundObjects.Add(Ship);
             _projectiles.Add(Ship);
             Ship.MessageDie += _die;
-
-            for (var i = 0; i < 15; i++)
-            {
-                var x = random.Next(0, Game.Width);
-                var y = random.Next(0, Game.Height);
-                var xDirection = random.Next(-25, 25);
-                var yDirection = random.Next(-25, 25);
-                var size = random.Next(10, 40);
-                var asteroid = new Asteroid(
-                    new Point(x, y), new
-                        Point(xDirection, yDirection),
-                    new Size(size, size),
-                    2, _logger, DestroyObject, _hit);
-                _backgroundObjects.Add(asteroid);
-                _projectiles.Add(asteroid);
-            }
 
             for (var i = 0; i < 15; i++)
             {
@@ -90,10 +76,33 @@ namespace Asteroids
                 _projectiles.Add(medkit);
             }
 
+            spawnAsteroids(_asteroidCount);
             _backgroundObjects.Sort((o1, o2) => o1.Layer.CompareTo(o2.Layer));
         }
 
-        public void createBullet()
+        private void spawnAsteroids(int count)
+        {
+            var random = new Random();
+
+            for (var i = 0; i < count; i++)
+            {
+                var x = random.Next(0, Game.Width);
+                var y = random.Next(0, Game.Height);
+                var xDirection = random.Next(-25, 25);
+                var yDirection = random.Next(-25, 25);
+                var size = random.Next(10, 40);
+                var asteroid = new Asteroid(
+                    new Point(x, y), new
+                        Point(xDirection, yDirection),
+                    new Size(size, size),
+                    2, _logger, DestroyObject, _hit);
+                _backgroundObjects.Add(asteroid);
+                _projectiles.Add(asteroid);
+                _asteroids.Add(asteroid);
+            }
+        }
+
+        public void CreateBullet()
         {
             var bullet = new Bullet(
                 new Point(Ship.Rectangle.X + Ship.Size.Width + 10, Ship.Rectangle.Y + 4),
@@ -116,6 +125,15 @@ namespace Asteroids
         {
             _backgroundObjects.Remove(obj);
             _projectiles.Remove(obj);
+            for (var i = 0; i < _asteroids.Count; i++)
+                if (_asteroids[i] == obj)
+                    _asteroids.RemoveAt(i);
+
+            if (_asteroids.Count <= 0)
+            {
+                _asteroidCount++;
+                spawnAsteroids(_asteroidCount);
+            }
         }
 
         public void UpdateAll()

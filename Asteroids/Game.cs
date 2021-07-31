@@ -56,7 +56,7 @@ namespace Asteroids
             switch (e.KeyCode)
             {
                 case Keys.ControlKey:
-                    _objectPool.createBullet();
+                    _objectPool.CreateBullet();
                     break;
                 case Keys.Up:
                     _objectPool.Ship.Up();
