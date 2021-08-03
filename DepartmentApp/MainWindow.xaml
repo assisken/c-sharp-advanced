@@ -27,7 +27,7 @@
                 Height="25"
                 Width="70"
                 VerticalAlignment="Bottom"
-                Click="Button_Click">
+                Click="AddButton_Click">
             Добавить
         </Button>
     </Grid>

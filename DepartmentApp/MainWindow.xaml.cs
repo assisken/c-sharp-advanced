@@ -17,10 +17,6 @@ namespace DepartmentApp
             FillList();
         }
 
-        private void UpdateLbEmployee(int selectedId) =>
-            lbEmployee.ItemsSource = _employees.Select(employee => employee)
-                .Where(employee => employee.DepartmentId == selectedId);
-
         private void FillList()
         {
             _departments = new ObservableCollection<Department>
@@ -38,16 +34,9 @@ namespace DepartmentApp
             cbDepartment.ItemsSource = _departments;
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            if (cbDepartment.SelectedValue == null) return;
-
-            var selected = (int) cbDepartment.SelectedValue;
-            _employees.Add(
-                new Employee {Id = 0, Name = "New Employee", Age = 0, Salary = 0, DepartmentId = selected}
-            );
-            UpdateLbEmployee(selected);
-        }
+        private void UpdateLbEmployee(int selectedId) =>
+            lbEmployee.ItemsSource = _employees.Select(employee => employee)
+                .Where(employee => employee.DepartmentId == selectedId);
 
         private void cbDepartment_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -58,13 +47,30 @@ namespace DepartmentApp
             UpdateLbEmployee(selected);
         }
 
+        private void SpawnEditWindow(Employee employee, EditEmployeeWindow.ApplyEvent applyEvent)
+        {
+            _editEmployeeWindow = new EditEmployeeWindow(employee) {Owner = this};
+            _editEmployeeWindow.OnApply += applyEvent;
+            _editEmployeeWindow.Show();
+        }
+
         private void LbEmployee_OnMouseDoubleClick(object sender, RoutedEventArgs e)
         {
             var comboBox = (ListBox) sender;
             var selected = (Employee) comboBox.SelectedItem;
-            _editEmployeeWindow = new EditEmployeeWindow(selected) {Owner = this};
-            _editEmployeeWindow.OnApply += lbEmployee.Items.Refresh;
-            _editEmployeeWindow.Show();
+            SpawnEditWindow(selected, lbEmployee.Items.Refresh);
+        }
+
+        private void AddButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (cbDepartment.SelectedValue == null) return;
+
+            var selected = (int) cbDepartment.SelectedValue;
+            var newEmployee = new Employee
+                {Id = 0, Name = "New Employee", Age = 0, Salary = 0, DepartmentId = selected};
+            
+            _employees.Add(newEmployee);
+            SpawnEditWindow(newEmployee, () => { UpdateLbEmployee(selected); });
         }
     }
 }
