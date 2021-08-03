@@ -1,0 +1,103 @@
+﻿<Window x:Class="DepartmentApp.EditEmployeeWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:local="clr-namespace:DepartmentApp"
+        mc:Ignorable="d"
+        Title="EditEmployeeWindow" Height="300" Width="400" ResizeMode="NoResize">
+    <Window.Resources>
+        <Style TargetType="RowDefinition">
+            <Setter Property="Height" Value="30" />
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="Margin" Value="5" />
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="Margin" Value="10" />
+            <Setter Property="Padding" Value="5" />
+        </Style>
+    </Window.Resources>
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="90" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="90" />
+        </Grid.ColumnDefinitions>
+
+        <Label
+            Grid.Row="0"
+            Grid.Column="0"
+            Content="ID"
+            Target="{Binding ElementName=txtId}" />
+        <TextBox
+            Grid.Row="0"
+            Grid.Column="1"
+            Grid.ColumnSpan="2"
+            Name="txtId" />
+        <Label
+            Grid.Row="1"
+            Grid.Column="0"
+            Content="Name"
+            Target="{Binding ElementName=txtName}" />
+        <TextBox
+            Grid.Row="1"
+            Grid.Column="1"
+            Grid.ColumnSpan="2"
+            Name="txtName" />
+        <Label
+            Grid.Row="2"
+            Grid.Column="0"
+            Content="Age"
+            Target="{Binding ElementName=txtAge}" />
+        <TextBox
+            Grid.Row="2"
+            Grid.Column="1"
+            Grid.ColumnSpan="2"
+            Name="txtAge" />
+        <Label
+            Grid.Row="3"
+            Grid.Column="0"
+            Content="Salary"
+            Target="{Binding ElementName=txtSalary}" />
+        <TextBox
+            Grid.Row="3"
+            Grid.Column="1"
+            Grid.ColumnSpan="2"
+            Name="txtSalary" />
+        <Label
+            Grid.Row="4"
+            Grid.Column="0"
+            Content="Department ID"
+            Target="{Binding ElementName=txtDepartmentId}" />
+        <TextBox
+            Grid.Row="4"
+            Grid.Column="1"
+            Grid.ColumnSpan="2"
+            Name="txtDepartmentId" />
+        <Button
+            Grid.Row="5"
+            Grid.Column="1"
+            Content="Отменить"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Bottom"
+            IsCancel="True"
+            Click="OnCancel" />
+        <Button
+            Grid.Row="5"
+            Grid.Column="1"
+            Content="Сохранить"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Bottom"
+            IsDefault="True"
+            Click="Apply" />
+    </Grid>
+</Window>
