@@ -1,4 +1,6 @@
-﻿namespace DepartmentApp
+﻿// Никита Жига
+
+namespace DepartmentApp
 {
     public class Employee
     {
